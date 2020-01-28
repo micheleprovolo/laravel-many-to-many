@@ -40,7 +40,7 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         $data = $request -> all();
-        
+
         $employee = Employee::create($data);
         $tasks = Task::find($data['tasks']);
         $employee -> tasks() -> attach($tasks);
@@ -67,7 +67,10 @@ class EmployeeController extends Controller
      */
     public function edit($id)
     {
-        //
+        $employee = Employee::findOrFail($id);
+        $tasks = Task::all();
+
+        return view('pages.employee-edit', compact('employee', 'tasks'));
     }
 
     /**
@@ -79,7 +82,14 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request -> all();
+
+        $employee = Employee::findOrFail($id);
+        $employee -> update($data);
+        $tasks = Task::find($data['tasks']);
+        $employee -> tasks() -> sync($tasks);
+
+        return redirect() -> route('employee.index');
     }
 
     /**
@@ -90,6 +100,17 @@ class EmployeeController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $employee = Employee::findOrFail($id);
+
+        // $employee -> tasks() -> detach();
+
+        $tasks = $employee -> tasks;
+
+        foreach ($tasks as $task) {
+          $employee -> tasks() -> detach($task);
+        }
+
+        $employee -> delete();
+        return redirect() -> route('employee.index');
     }
 }

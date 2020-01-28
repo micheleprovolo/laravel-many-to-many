@@ -24,9 +24,17 @@
                </li>
                
                @endforeach
-               <br><br>
+               <br>
+
             </ul>
 
+            <br>
+
+            <a href="{{ route('employee.edit', $employee -> id) }}">EDIT Employee</a><br>
+
+            <a href="{{ route('employee.delete', $employee -> id) }}">DELETE Employee</a>
+
+            <br><br><br>
 
             </li>
 
